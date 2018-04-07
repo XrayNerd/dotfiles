@@ -1,0 +1,17 @@
+#!/bin/sh
+
+ROOT=$(lsw -r)
+SW=$(wattr w $ROOT)
+SH=$(wattr h $ROOT)
+
+W=64
+H=32
+X=$((SW - W))
+Y=$((SH - H))
+
+font='Termsyn'
+
+while :; do
+    date "+%{c}%T"
+    sleep 1
+done | lemonbar -d -g ${W}x${H}+$X+$Y -f "$font" -B\#ff41683C -F\#ff93B099

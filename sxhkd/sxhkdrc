@@ -1,0 +1,73 @@
+# Lets do some volume?
+# up
+F10
+  amixer set Master 5%+; \
+  popup $(~/bin/volume -p)
+# down
+F9
+  amixer set Master 5%-; \
+  popup $(~/bin/volume -p)
+# mute
+F8
+  amixer set Master toggle; \
+  popup $(~/bin/volume -p)
+# Emacs!
+alt + e
+  emacs
+
+# fyrefux
+alt + w
+  firefox
+
+# surfs up bro
+alt + shift + w
+  surf
+
+# Move the windows around n stuff
+alt + {Left,Down,Up,Right}
+  wmv {-20 0, 0 20, 0 -20, 20 0} $(pfw)
+
+# Resive the windows n stuff
+alt + shift + {Left,Down,Up,Right}
+  wrs {-20 0, 0 20, 0 -20, 20 0} $(pfw)
+
+# Spawn a term (st)
+alt + Return
+  st
+
+# Kill window
+alt + Escape
+  killw $(pfw)
+
+#Alt tab bruh
+alt + {Tab, shift + Tab}
+  vroum {next, prev}
+
+#Show/hide a group
+alt + {1,2,3,4,5)
+  groaw -t {1,2,3,4,5}
+
+# Add to a group
+alt + shift + {1,2,3,4,5}
+  groaw -a {1,2,3,4,5}
+
+# Delete single from group
+alt + control + {1,2,3,4,5}
+  groaw -d {1,2,3,4,5}
+
+# Delete all from groups
+alt + BackSpace
+  groaw -d all
+
+# Maximize!
+# Keybind for emax >:(
+#alt + x
+#  maximize $(pfw)
+
+# Maximize!V!
+alt + equal
+  maximize -v $(pfw)
+
+# Maximize!H!
+alt + shift + equal
+  maximize -h $(pfw)

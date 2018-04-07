@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Wrap around for battery and popup
+
+BATN=$(ls /sys/class/power_supply/ | grep BAT)
+
+BATC=`cat /sys/class/power_supply/${BATN}/capacity`
+
+LEVL=15
+
+test ${BATC} -le ${LEVL} && popup $(~/bin/battery -p)

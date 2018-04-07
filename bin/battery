@@ -1,0 +1,97 @@
+#!/bin/sh
+#
+# z3bra - (c) wtfpl 2014
+# Modified by XrayNerd - 2018 ;)
+
+usage () {
+    cat <<EOF
+usage: $(basename $0) [-hlsb]
+    -h : print this help
+    -l : print battery percentage (default)
+    -s : print battery state
+    -b : beep under critical level (see BAT_BELL)
+
+environment:
+    CRITICAL : the critical state level
+    BAT_BELL : the command to run when run with -b flag under CRITICAL level
+EOF
+}
+
+# if battery is under a critical level, $BAT_BELL will be run
+bell () {
+    # don't do anything if we're over the critical level, or the battery is
+    # charging
+    test ${BATC} -gt ${CRITICAL}    && return 0
+    test ${BATS} != "Discharging"   && return 0
+
+    $BAT_BELL
+}
+
+bar () {
+  RED="#b06a58"
+  YEL="#e5c078"
+  GRY="#cccaca"
+  if [ ${BATC} -gt 0 ] && [ ${BATC} -lt 10 ]; then
+    FIRST="%{F${RED}}━"
+    LAST="%{F${GRY}}━━━━━━━━━"
+  elif [ ${BATC} -ge 10 ] && [ ${BATC} -lt  20 ]; then
+    FIRST="%{F${RED}}━━"
+    LAST="%{F${GRY}}━━━━━━━━"
+  elif [ ${BATC} -ge 20 ] && [ ${BATC} -lt 30 ]; then
+    FIRST="%{F${RED}}━━━"
+    LAST="%{F${GRY}}━━━━━━━"
+  elif [ ${BATC} -ge 30 ] && [ ${BATC} -lt 40 ]; then
+    FIRST="%{F${YEL}}━━━━"
+    LAST="%{F${GRY}}━━━━━━"
+  elif [ ${BATC} -ge 40 ] && [ ${BATC} -lt 50 ]; then
+    FIRST="%{F${YEL}}━━━━━"
+    LAST="%{F${GRY}}━━━━━"
+  elif [ ${BATC} -ge 50 ] && [ ${BATC} -lt 60 ]; then
+    FIRST="%{F${YEL}}━━━━━━"
+    LAST="%{F${GRY}}━━━━"
+  elif [ ${BATC} -ge 60 ] && [ ${BATC} -lt 70 ]; then
+    FIRST="%{F${YEL}}━━━━━━━"
+    LAST="%{F${GRY}}━━━"
+  elif [ ${BATC} -ge 70 ] && [ ${BATC} -lt 80 ]; then
+    FIRST="%{F${YEL}}━━━━━━━━"
+    LAST="%{F${GRY}}━━"
+  elif [ ${BATC} -ge 80 ] && [ ${BATC} -lt 90 ]; then
+    FIRST="%{F${YEL}}━━━━━━━━━"
+    LAST="%{F${GRY}}━"
+  elif [ ${BATC} -ge 90 ]; then
+    FIRST="%{F${YEL}}━━━━━━━━━━"
+    LAST=""
+  fi
+  echo "%{l}  Bat %{r}${FIRST}${LAST}  "
+}
+
+# output the current battery level
+level () {
+    echo "${BATC}%"
+}
+
+# print the current battery state
+state () {
+    echo "${BATS}"
+}
+
+# get battery name
+BATN=$(ls /sys/class/power_supply/ | grep BAT)
+
+# exit if no battery available
+test -z "$BATN" && exit 1
+
+# get battery level and status (charging or not)
+BATC=`cat /sys/class/power_supply/${BATN}/capacity`
+BATS=`cat /sys/class/power_supply/${BATN}/status`
+
+CRITICAL=${CRITICAL:-7}
+BAT_BELL=${BAT_BELL:-beep -f 1000 -l 200}
+
+case $1 in
+    -h) usage ;;
+    -s) state ;;
+    -b) bell ;;
+    -p) bar ;;
+     *) level ;;
+ esac
