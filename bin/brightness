@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Chris was probably here ;)
+
+CUR=$(cat /sys/class/backlight/intel_backlight/brightness)
+set_level() {
+  case ${NUM#[-+]} in
+    *[!0-9]* | '') echo "Not a number!" ;;
+    * )
+      if [ $NUM -ge 0 ] && [ $NUM -le 1200 ] 
+      then
+        echo $NUM > /sys/class/backlight/intel_backlight/brightness
+      else
+        echo "Number is out of the range (0 - 1200)"
+      fi ;;
+  esac
+}
+
+
+case $1 in
+  inc|+) NUM=$((CUR + 100)) set_level;;
+  dec|-) NUM=$((CUR - 100)) set_level;;
+  *) NUM=$1 set_level ;; 
+esac
