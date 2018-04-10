@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# Chris' Special Flavour
 
 ROOT=$(lsw -r)
 SW=$(wattr w $ROOT)
@@ -9,9 +11,9 @@ H=32
 X=$((SW - W))
 Y=$((SH - H))
 
-font='Termsyn'
+font='Termsynu:size=8'
 
 while :; do
     date "+%{c}%T"
     sleep 1
-done | lemonbar -d -g ${W}x${H}+$X+$Y -f "$font" -B\#ff41683C -F\#ff93B099
+done | lemonbar -d -g ${W}x${H}+$X+$Y -f "$font" -B\#ff41683C -F\#ffF0F0F0
